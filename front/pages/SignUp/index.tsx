@@ -1,4 +1,4 @@
-// import useInput from '@hooks/useInput';
+import useInput from '@hooks/useInput';
 import { Button, Error, Form, Header, Input, Label, LinkContainer, Success } from '@pages/SignUp/styles';
 // import fetcher from '@utils/fetcher';
 import axios from 'axios';
@@ -8,7 +8,7 @@ import { Redirect } from 'react-router-dom';
 
 const SignUp = () => {
   // const { data: userData } = useSWR('/api/users', fetcher);
-  const [signUpError, setSignUpError] = useState(false);
+  const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [mismatchError, setMismatchError] = useState(false);
   const [email, onChangeEmail] = useInput('');
@@ -21,7 +21,7 @@ const SignUp = () => {
       setPassword(e.target.value);
       setMismatchError(passwordCheck !== e.target.value);
     },
-    [passwordCheck, setPassword],
+    [passwordCheck],
   );
 
   const onChangePasswordCheck = useCallback(
@@ -29,7 +29,7 @@ const SignUp = () => {
       setPasswordCheck(e.target.value);
       setMismatchError(password !== e.target.value);
     },
-    [password, setPasswordCheck],
+    [password],
   );
 
   const onSubmit = useCallback(
@@ -39,17 +39,25 @@ const SignUp = () => {
         return;
       }
       if (!mismatchError) {
-        setSignUpError(false);
+        setSignUpError('');
         setSignUpSuccess(false);
+        //tehn catch finally에서 setstate쓰면 비동기요청전에  그것들 기본값으로초기화해줘야좋음
         axios
-          .post('/api/users', { email, nickname, password })
-          .then(() => {
+          .post(/* 프록시서버를 쓸거면 앞에호스트지워줘야함'http://localhost:3095/api/users' */ '/api/users', {
+            email,
+            nickname,
+            password,
+          })
+          .then((response) => {
+            console.log(response);
             setSignUpSuccess(true);
           })
           .catch((error) => {
             console.log(error.response?.data);
-            setSignUpError(error.response?.data?.code === 403);
-          });
+            setSignUpError(error.response?.data);
+          })
+          .finally(() => {});
+        //finally 성공하든 실패하든 공통적으로 하고싶은것
       }
     },
     [email, nickname, password, mismatchError],
@@ -94,7 +102,7 @@ const SignUp = () => {
           </div>
           {mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
           {!nickname && <Error>닉네임을 입력해주세요.</Error>}
-          {signUpError && <Error>이미 가입된 이메일입니다.</Error>}
+          {signUpError && <Error>{signUpError}</Error>}
           {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>}
         </Label>
         <Button type="submit">회원가입</Button>
