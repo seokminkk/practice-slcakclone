@@ -3,7 +3,7 @@ import { Button, Error, Form, Header, Input, Label, LinkContainer, Success } fro
 // import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 // import useSWR from 'swr';
 
 const SignUp = () => {
@@ -69,7 +69,7 @@ const SignUp = () => {
 
   return (
     <div id="container">
-      <Header>Sleact</Header>
+      <Header>Slack</Header>
       <Form onSubmit={onSubmit}>
         <Label id="email-label">
           <span>이메일 주소</span>
@@ -109,7 +109,7 @@ const SignUp = () => {
       </Form>
       <LinkContainer>
         이미 회원이신가요?&nbsp;
-        <a href="/login">로그인 하러가기</a>
+        <Link to="/login">로그인 하러가기</Link>
       </LinkContainer>
     </div>
   );
