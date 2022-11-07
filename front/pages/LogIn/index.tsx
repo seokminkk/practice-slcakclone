@@ -25,7 +25,7 @@ const LogIn = () => {
           },
         )
         .then((response) => {
-          mutate();
+          mutate(response.data, false);
 
           // console.log('로그인 데이타', response);
         })
@@ -41,7 +41,7 @@ const LogIn = () => {
   }
 
   if (data) {
-    return <Redirect to="/workspace/channel" />;
+    return <Redirect to="/workspace/slack/channel/일반" />;
   }
 
   // console.log(error, userData);
