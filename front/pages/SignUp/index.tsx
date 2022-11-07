@@ -4,10 +4,11 @@ import { Button, Error, Form, Header, Input, Label, LinkContainer, Success } fro
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-// import useSWR from 'swr';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcher';
 
 const SignUp = () => {
-  // const { data: userData } = useSWR('/api/users', fetcher);
+  const { data, error, mutate } = useSWR('/api/users', fetcher);
   const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [mismatchError, setMismatchError] = useState(false);
@@ -63,9 +64,13 @@ const SignUp = () => {
     [email, nickname, password, mismatchError],
   );
 
-  // if (userData) {
-  //   return <Redirect to="/workspace/sleact" />;
-  // }
+  if (data === undefined) {
+    return <div>로딩중....</div>;
+  }
+
+  if (data) {
+    return <Redirect to="/workspace/channel" />;
+  }
 
   return (
     <div id="container">
