@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 
 const SignUp = () => {
-  const { data, error, mutate } = useSWR('/api/users', fetcher);
+  const { data: userData } = useSWR('/api/users', fetcher);
   const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [mismatchError, setMismatchError] = useState(false);
@@ -63,11 +63,11 @@ const SignUp = () => {
     [email, nickname, password, mismatchError],
   );
 
-  if (data === undefined) {
+  if (userData === undefined) {
     return <div>로딩중....</div>;
   }
 
-  if (data) {
+  if (userData) {
     return <Redirect to="/workspace/slack/channel/일반" />;
   }
 
